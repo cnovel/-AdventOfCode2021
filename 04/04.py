@@ -52,13 +52,16 @@ def main():
     for n in bingo_nums:
         for grid in grids:
             grid.mark_n(n)
+        new_grids = []
         for grid in grids:
             if grid.is_valid():
                 score = n * grid.sum_unmarked()
                 if last_score < 0:
                     print("First grid score", score)
                 last_score = score
-        grids = [g for g in grids if not g.is_valid()]
+            else:
+                new_grids.append(grid)
+        grids = new_grids
     print("Last grid score", last_score)
 
     print(f"Took {time.time() -s:.3f}s")
