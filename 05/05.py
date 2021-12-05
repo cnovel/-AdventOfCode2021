@@ -47,15 +47,15 @@ def main():
     s = time.time()
 
     list_lines = get_lines(lines)
-    straight_lines = get_straight_lines(list_lines)
     max_x = 0
     max_y = 0
-    for line in straight_lines:
+    for line in list_lines:
         max_x = max(max_x, max(line[0], line[2]))
         max_y = max(max_y, max(line[1], line[3]))
 
     score = [0 for i in range(0, (max_x + 1) * (max_y + 1))]
 
+    straight_lines = get_straight_lines(list_lines)
     for line in get_lines_as_point_list(straight_lines):
         for p in line:
             i = p[0] + (max_x + 1) * p[1]
@@ -67,9 +67,9 @@ def main():
         for p in line:
             i = p[0] + (max_x + 1) * p[1]
             score[i] += 1
-
     print("Part 2:", sum([1 for s in score if s > 1]))
-    print(f"Took {time.time() -s:.3f}s")
+
+    print(f"Took {time.time() - s:.3f}s")
 
 
 if __name__ == '__main__':
