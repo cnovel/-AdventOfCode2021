@@ -20,7 +20,7 @@ def main():
             f = 0
             for j in range(0, 9):
                 f += counter[j]
-            print(f)
+            print(f"Day {day}: {f}")
 
     print(f"Took {time.time() - s:.3f}s")
 
