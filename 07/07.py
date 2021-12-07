@@ -1,5 +1,4 @@
 import time
-from collections import Counter
 
 
 def part_1(crab_pos):
@@ -9,6 +8,8 @@ def part_1(crab_pos):
         fuel_burn_pos = 0
         for crab in crab_pos:
             fuel_burn_pos += abs(crab - pos)
+            if 0 < fuel_burn < fuel_burn_pos:
+                break
         if fuel_burn < 0:
             fuel_burn = fuel_burn_pos
             best_pos = pos
