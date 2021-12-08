@@ -36,19 +36,15 @@ def standard_pattern_to_int(seq):
 
 
 def line_decoder(line):
-
     # First, decode the top wire
-    seven_pattern = sorted([x for x in line[0] if len(x) == 3][0])
     one_pattern = sorted([x for x in line[0] if len(x) == 2][0])
-    seven_pattern = [x for x in seven_pattern if x not in one_pattern]
+    seven_pattern = [x for x in sorted([x for x in line[0] if len(x) == 3][0]) if x not in one_pattern]
 
     # Select possible remaining segments for 4:
-    four_pattern = sorted([x for x in line[0] if len(x) == 4][0])
-    four_pattern = [x for x in four_pattern if x not in one_pattern]
+    four_pattern = [x for x in sorted([x for x in line[0] if len(x) == 4][0]) if x not in one_pattern]
 
     # Select unmatched letters
-    matched_letters = sorted(one_pattern + seven_pattern + four_pattern)
-    unmatched = [x for x in 'abcdefg' if x not in matched_letters]
+    unmatched = [x for x in 'abcdefg' if x not in sorted(one_pattern + seven_pattern + four_pattern)]
 
     # Create all possible dicts
     pos = []
@@ -67,15 +63,14 @@ def line_decoder(line):
             continue
         convert_patterns = []
         for pattern in line[0]:
-            s = ''.join(sorted([possible_d[x] for x in pattern]))
-            convert_patterns.append(standard_pattern_to_int(s))
+            convert_patterns.append(standard_pattern_to_int(''.join(sorted([possible_d[x] for x in pattern]))))
         if len([x for x in convert_patterns if x < 0]) == 0:
             good_d = possible_d
 
+    # Convert second part to int
     digits = []
     for pattern in line[1]:
-        s = ''.join(sorted([good_d[x] for x in pattern]))
-        digits.append(str(standard_pattern_to_int(s)))
+        digits.append(str(standard_pattern_to_int(''.join(sorted([good_d[x] for x in pattern])))))
     return int(''.join(digits))
 
 
