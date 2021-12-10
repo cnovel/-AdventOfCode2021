@@ -12,7 +12,7 @@ def get_closing(c):
         return ">"
 
 
-def get_points(c):
+def get_bad_points(c):
     if c == ")":
         return 3
     if c == "]":
@@ -48,7 +48,7 @@ def main():
             if c in '([<{':
                 stack.append(get_closing(c))
             elif c != stack.pop():
-                bad_points += get_points(c)
+                bad_points += get_bad_points(c)
                 bad_line = True
                 break
         if bad_line:
