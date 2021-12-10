@@ -58,7 +58,6 @@ def main():
             points = 5 * points + get_close_points(stack.pop())
         good_points.append(points)
 
-    good_points.sort()
     print("Part 1:", bad_points)
     print("Part 2:", sorted(good_points)[int(len(good_points)/2)])
     print(f"Took {time.time() - s:.3f}s")
