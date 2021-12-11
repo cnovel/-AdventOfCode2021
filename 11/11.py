@@ -43,9 +43,8 @@ def main():
         real_step += 1
         octopuses, flashes = evolve(octopuses)
         if flashes == 100:
-            print("Part 2:", real_step)
             big_flashed = True
-
+    print("Part 2:", real_step)
     print(f"Took {time.time() - s:.3f}s")
 
 
