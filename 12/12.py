@@ -16,7 +16,7 @@ def find_paths_small_cave_once(edges, cur_path):
             continue
         if node.isupper():
             paths += find_paths_small_cave_once(edges, cur_path + [node])
-    return [path for path in paths if path[-1] == 'end']
+    return paths
 
 
 def find_paths_small_cave_twice(edges, cur_path, has_small_cave_duplicate):
@@ -39,7 +39,7 @@ def find_paths_small_cave_twice(edges, cur_path, has_small_cave_duplicate):
                 continue
         if node.isupper():
             paths += find_paths_small_cave_twice(edges, cur_path + [node], has_small_cave_duplicate)
-    return [path for path in paths if path[-1] == 'end']
+    return paths
 
 
 def main():
