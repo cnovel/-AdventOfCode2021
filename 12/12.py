@@ -19,11 +19,6 @@ def find_paths_small_cave_once(edges, cur_path):
     return [path for path in paths if path[-1] == 'end']
 
 
-def no_lower_duplicates(cur_path):
-    c = Counter([x for x in cur_path if x.islower()])
-    return c.most_common(1)[0][1] < 2
-
-
 def find_paths_small_cave_twice(edges, cur_path, has_small_cave_duplicate):
     paths = []
     last_node = cur_path[-1]
@@ -36,12 +31,11 @@ def find_paths_small_cave_twice(edges, cur_path, has_small_cave_duplicate):
         if node.islower():
             if node == 'start':
                 continue
-            if node in cur_path and not has_small_cave_duplicate and no_lower_duplicates(cur_path):
-                # the first lower node can be repeated
-                paths += find_paths_small_cave_twice(edges, cur_path + [node], True)
-                continue
             if node not in cur_path:
                 paths += find_paths_small_cave_twice(edges, cur_path + [node], has_small_cave_duplicate)
+                continue
+            if not has_small_cave_duplicate:
+                paths += find_paths_small_cave_twice(edges, cur_path + [node], True)
                 continue
         if node.isupper():
             paths += find_paths_small_cave_twice(edges, cur_path + [node], has_small_cave_duplicate)
