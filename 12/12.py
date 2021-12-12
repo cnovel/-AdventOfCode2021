@@ -24,7 +24,7 @@ def no_lower_duplicates(cur_path):
     return c.most_common(1)[0][1] < 2
 
 
-def find_paths_small_cave_twice(edges, cur_path):
+def find_paths_small_cave_twice(edges, cur_path, has_small_cave_duplicate):
     paths = []
     last_node = cur_path[-1]
     possible_next_nodes = [edge[1] for edge in edges if edge[0] == last_node] + \
@@ -36,15 +36,15 @@ def find_paths_small_cave_twice(edges, cur_path):
         if node.islower():
             if node == 'start':
                 continue
-            if node in cur_path and no_lower_duplicates(cur_path):
+            if node in cur_path and not has_small_cave_duplicate and no_lower_duplicates(cur_path):
                 # the first lower node can be repeated
-                paths += find_paths_small_cave_twice(edges, cur_path + [node])
+                paths += find_paths_small_cave_twice(edges, cur_path + [node], True)
                 continue
             if node not in cur_path:
-                paths += find_paths_small_cave_twice(edges, cur_path + [node])
+                paths += find_paths_small_cave_twice(edges, cur_path + [node], has_small_cave_duplicate)
                 continue
         if node.isupper():
-            paths += find_paths_small_cave_twice(edges, cur_path + [node])
+            paths += find_paths_small_cave_twice(edges, cur_path + [node], has_small_cave_duplicate)
     return [path for path in paths if path[-1] == 'end']
 
 
@@ -56,7 +56,7 @@ def main():
     edges = [[line.split('-')[0], line.split('-')[1]] for line in lines]
     paths = find_paths_small_cave_once(edges, ['start'])
     print("Part 1:", len(paths))
-    paths = find_paths_small_cave_twice(edges, ['start'])
+    paths = find_paths_small_cave_twice(edges, ['start'], False)
     print("Part 2:", len(paths))
     print(f"Took {time.time() - s:.3f}s")
 
