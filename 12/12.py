@@ -10,9 +10,7 @@ def find_paths(edges, cur_path, has_small_cave_duplicate):
         if node == 'end':
             count += 1
             continue
-        if node.islower():
-            if node == 'start':
-                continue
+        if node.islower() and node != 'start':
             if node not in cur_path:
                 count += find_paths(edges, cur_path + [node], has_small_cave_duplicate)
                 continue
