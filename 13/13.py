@@ -1,11 +1,6 @@
 import time
 
 
-def dump(matrix):
-    for line in matrix:
-        print(''.join(['#' if x else ' ' for x in line]))
-
-
 def fold_x(matrix, n):
     new_matrix = []
     for line in matrix:
@@ -28,10 +23,7 @@ def fold_y(matrix, n):
 
 
 def count(matrix):
-    c = 0
-    for line in matrix:
-        c += line.count(True)
-    return c
+    return sum([line.count(True) for line in matrix])
 
 
 def main():
@@ -69,7 +61,8 @@ def main():
             print("Count", count(matrix))
             first = False
 
-    dump(matrix)
+    for line in matrix:
+        print(''.join(['##' if x else '  ' for x in line]))
     print(f"Took {time.time() - s:.3f}s")
 
 
