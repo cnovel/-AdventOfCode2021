@@ -1,14 +1,4 @@
 import time
-from collections import Counter
-
-
-def grow(polymer: str, dict_insert):
-    s = polymer[0]
-    for i in range(1, len(polymer)):
-        k = polymer[i-1] + polymer[i]
-        s += dict_insert[k]
-        s += polymer[i]
-    return s
 
 
 def grow_smart(count_pairs, count_letters, dict_insert):
@@ -29,7 +19,7 @@ def grow_smart(count_pairs, count_letters, dict_insert):
     return new_d, count_letters
 
 
-def print_res(letters):
+def get_score(letters):
     minimum = -1
     maximum = -1
     for letter, count in letters.items():
@@ -41,7 +31,7 @@ def print_res(letters):
             minimum = count
         else:
             minimum = minimum if minimum < count else count
-    print("Res:", maximum - minimum)
+    return maximum - minimum
 
 
 def main():
@@ -49,34 +39,29 @@ def main():
         lines = [line.strip() for line in in14.readlines()]
     s = time.time()
 
-    polymer = lines[0]
-    dict_insert = {}
+    rules = {}
     for line in lines:
         if '>' in line:
             val = line.split(" -> ")
-            dict_insert[val[0]] = val[1]
-
-    for i in range(0, 10):
-        polymer = grow(polymer, dict_insert)
-    c = Counter(polymer)
-    print("Part 1:", c.most_common()[0][1] - c.most_common()[-1][1])
+            rules[val[0]] = val[1]
 
     polymer = lines[0]
-    dict_count_pairs = {}
+    count_pairs = {}
     letters = {polymer[0]: 1}
     for i in range(1, len(polymer)):
         k = polymer[i-1] + polymer[i]
-        if k in dict_count_pairs:
-            dict_count_pairs[k] += 1
+        if k in count_pairs:
+            count_pairs[k] += 1
         else:
-            dict_count_pairs[k] = 1
+            count_pairs[k] = 1
         if polymer[i] in letters:
             letters[polymer[i]] += 1
         else:
             letters[polymer[i]] = 1
     for i in range(0, 40):
-        dict_count_pairs, letters = grow_smart(dict_count_pairs, letters, dict_insert)
-    print_res(letters)
+        count_pairs, letters = grow_smart(count_pairs, letters, rules)
+        if i == 9 or i == 39:
+            print(f"Step {i+1}: {get_score(letters)}")
 
     print(f"Took {time.time() - s:.3f}s")
 
