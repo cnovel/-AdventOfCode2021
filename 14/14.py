@@ -1,21 +1,16 @@
 import time
+from collections import Counter
 
 
 def grow_smart(count_pairs, count_letters, dict_insert):
-    new_d = {}
+    new_d = Counter()
     for key, val in count_pairs.items():
         new_letter = dict_insert[key]
         p1 = key[0] + dict_insert[key]
         p2 = dict_insert[key] + key[1]
         for p in [p1, p2]:
-            if p in new_d:
-                new_d[p] += val
-            else:
-                new_d[p] = val
-        if new_letter in count_letters:
-            count_letters[new_letter] += val
-        else:
-            count_letters[new_letter] = val
+            new_d[p] += val
+        count_letters[new_letter] += val
     return new_d, count_letters
 
 
@@ -46,18 +41,12 @@ def main():
             rules[val[0]] = val[1]
 
     polymer = lines[0]
-    count_pairs = {}
-    letters = {polymer[0]: 1}
+    count_pairs = Counter()
+    letters = Counter({polymer[0]: 1})
     for i in range(1, len(polymer)):
         k = polymer[i-1] + polymer[i]
-        if k in count_pairs:
-            count_pairs[k] += 1
-        else:
-            count_pairs[k] = 1
-        if polymer[i] in letters:
-            letters[polymer[i]] += 1
-        else:
-            letters[polymer[i]] = 1
+        count_pairs[k] += 1
+        letters[polymer[i]] += 1
     for i in range(0, 40):
         count_pairs, letters = grow_smart(count_pairs, letters, rules)
         if i == 9 or i == 39:
