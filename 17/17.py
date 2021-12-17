@@ -67,7 +67,7 @@ def main():
     box[2] = -box[2]
     box[3] = -box[3]
 
-    max_vy = -box[2] - 1
+    max_vy = -box[2] - 1  # Max vy at s = 0 is y_min (otherwise we overshoot), meaning we shoot up at -y_min - 1
     max_height = int(max_vy * (max_vy + 1) / 2)
     print(f"Part 1: {max_height}m with max_vy = {max_vy}")
 
