@@ -110,9 +110,7 @@ def main():
     snails = [parse_line(line) for line in lines]
     snail = process_snail(snails[0])
     for i in range(1, len(snails)):
-        snail = add_snail(snail, snails[i])
-        snail = process_snail(snail)
-
+        snail = process_snail(add_snail(snail, snails[i]))
     print("Part 1:", magnitude(snail))
 
     mag_max = 0
@@ -120,8 +118,7 @@ def main():
         for j in range(i+1, len(snails)):
             mag_a = magnitude(process_snail(add_snail(snails[i], snails[j])))
             mag_b = magnitude(process_snail(add_snail(snails[j], snails[i])))
-            mag_max = max(mag_max, mag_a)
-            mag_max = max(mag_max, mag_b)
+            mag_max = max(mag_max, mag_a, mag_b)
     print("Part 2:", mag_max)
 
     print(f"Took {time.time() - s:.3f}s")
