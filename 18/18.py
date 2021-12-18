@@ -63,14 +63,6 @@ def process_snail(snail):
                 new_snail.append(snail[i])
                 continue
 
-            if snail[i][0] > 9:  # Split
-                i_left = int(snail[i][0]/2)
-                i_right = int(snail[i][0]/2 + 0.5)
-                new_snail.append([i_left, snail[i][1] + 1])
-                new_snail.append([i_right, snail[i][1] + 1])
-                change = True
-                continue
-
             if snail[i][1] > 4:  # Explode
                 if len(new_snail) > 0:
                     new_snail[-1][0] += snail[i][0]
@@ -82,27 +74,55 @@ def process_snail(snail):
                 continue
 
             new_snail.append(snail[i])
+        snail = new_snail
+        if change:
+            continue
+
+        new_snail = []
+        for i in range(0, len(snail)):
+            if skip:
+                skip = False
+                continue
+
+            if change:
+                new_snail.append(snail[i])
+                continue
+
+            if snail[i][0] > 9:  # Split
+                i_left = int(snail[i][0]/2)
+                i_right = int(snail[i][0]/2 + 0.5)
+                new_snail.append([i_left, snail[i][1] + 1])
+                new_snail.append([i_right, snail[i][1] + 1])
+                change = True
+                continue
+
+            new_snail.append(snail[i])
 
         snail = new_snail
-        print(snail)
     return snail
 
 
 def main():
-    with open("input_18test.txt", 'r') as in18:
+    with open("input_18.txt", 'r') as in18:
         lines = [line.strip() for line in in18.readlines()]
     s = time.time()
 
     snails = [parse_line(line) for line in lines]
-
     snail = process_snail(snails[0])
-    print(snail)
     for i in range(1, len(snails)):
         snail = add_snail(snail, snails[i])
-        print("Add:\n", snail)
         snail = process_snail(snail)
 
     print("Part 1:", magnitude(snail))
+
+    mag_max = 0
+    for i in range(0, len(snails)):
+        for j in range(i+1, len(snails)):
+            mag_a = magnitude(process_snail(add_snail(snails[i], snails[j])))
+            mag_b = magnitude(process_snail(add_snail(snails[j], snails[i])))
+            mag_max = max(mag_max, mag_a)
+            mag_max = max(mag_max, mag_b)
+    print("Part 2:", mag_max)
 
     print(f"Took {time.time() - s:.3f}s")
 
