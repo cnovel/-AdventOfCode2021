@@ -49,32 +49,38 @@ class Cube:
     def size(self):
         return (self.x_max + 1 - self.x_min) * (self.y_max + 1 - self.y_min) * (self.z_max + 1 - self.z_min)
 
+    def _get_cubes(self, cube):
+        cubes = []
+        x_pairs = ((min(self.x_min, cube.x_min), max(self.x_min, cube.x_min) - 1),
+                   (max(self.x_min, cube.x_min), min(self.x_max, cube.x_max)),
+                   (min(self.x_max, cube.x_max) + 1, max(self.x_max, cube.x_max)))
+        y_pairs = ((min(self.y_min, cube.y_min), max(self.y_min, cube.y_min) - 1),
+                   (max(self.y_min, cube.y_min), min(self.y_max, cube.y_max)),
+                   (min(self.y_max, cube.y_max) + 1, max(self.y_max, cube.y_max)))
+        z_pairs = ((min(self.z_min, cube.z_min), max(self.z_min, cube.z_min) - 1),
+                   (max(self.z_min, cube.z_min), min(self.z_max, cube.z_max)),
+                   (min(self.z_max, cube.z_max) + 1, max(self.z_max, cube.z_max)))
+        
+        for x_pair in x_pairs:
+            if x_pair[1] < x_pair[0]:
+                continue
+            for y_pair in y_pairs:
+                if y_pair[1] < y_pair[0]:
+                    continue
+                for z_pair in z_pairs:
+                    if z_pair[1] < z_pair[0]:
+                        continue
+                    cubes.append(Cube(x_pair[0], x_pair[1], y_pair[0], y_pair[1], z_pair[0], z_pair[1]))
+        return cubes
+
     def add(self, cube) -> list:  # Returns a list of new lit cubes
         if not self.intersects(cube):
             return [cube]
 
         cubes = []
-        xs = sorted([self.x_min, self.x_max, cube.x_min, cube.x_max])
-        ys = sorted([self.y_min, self.y_max, cube.y_min, cube.y_max])
-        zs = sorted([self.z_min, self.z_max, cube.z_min, cube.z_max])
-        for i in range(0, len(xs) - 1):
-            min_x = xs[i]
-            max_x = xs[i+1] - 1 if i != len(xs) - 2 else xs[i+1]  # We want to create disjoint cubes
-            if min_x > max_x:
-                continue
-            for j in range(0, len(ys) - 1):
-                min_y = ys[j]
-                max_y = ys[j+1] - 1 if j != len(ys) - 2 else ys[j+1]  # We want to create disjoint cubes
-                if min_y > max_y:
-                    continue
-                for k in range(0, len(zs) - 1):
-                    min_z = zs[k]
-                    max_z = zs[k+1] - 1 if k != len(zs) - 2 else zs[k+1]  # We want to create disjoint cubes
-                    if min_z > max_z:
-                        continue
-                    c = Cube(min_x, max_x, min_y, max_y, min_z, max_z)
-                    if not self.engulf(c) and cube.engulf(c):
-                        cubes.append(c)
+        for sub_cube in self._get_cubes(cube):
+            if cube.engulf(sub_cube) and not self.engulf(sub_cube):
+                cubes.append(sub_cube)
         return cubes
 
     def delete(self, cube) -> list:
@@ -84,27 +90,9 @@ class Cube:
             return [cube]
 
         cubes = []
-        xs = sorted([self.x_min, self.x_max, cube.x_min, cube.x_max])
-        ys = sorted([self.y_min, self.y_max, cube.y_min, cube.y_max])
-        zs = sorted([self.z_min, self.z_max, cube.z_min, cube.z_max])
-        for i in range(0, len(xs) - 1):
-            min_x = xs[i]
-            max_x = xs[i+1] - 1 if i != len(xs) - 2 else xs[i+1]
-            if min_x > max_x:
-                continue
-            for j in range(0, len(ys) - 1):
-                min_y = ys[j]
-                max_y = ys[j+1] - 1 if j != len(ys) - 2 else ys[j+1]
-                if min_y > max_y:
-                    continue
-                for k in range(0, len(zs) - 1):
-                    min_z = zs[k]
-                    max_z = zs[k+1] - 1 if k != len(zs) - 2 else zs[k+1]
-                    if min_z > max_z:
-                        continue
-                    c = Cube(min_x, max_x, min_y, max_y, min_z, max_z)
-                    if self.engulf(c) and not cube.engulf(c):
-                        cubes.append(c)
+        for sub_cube in self._get_cubes(cube):
+            if self.engulf(sub_cube) and not cube.engulf(sub_cube):
+                cubes.append(sub_cube)
         return cubes
 
 
@@ -113,10 +101,11 @@ def part_2(lines):
     for i in range(1, len(lines)):
         print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
         line = lines[i]
-        newly_lit_cubes = [Cube(line[1][0], line[1][1], line[1][2], line[1][3], line[1][4], line[1][5])]
+        current_cube = Cube(line[1][0], line[1][1], line[1][2], line[1][3], line[1][4], line[1][5])
         new_cubes = []
 
         if line[0] == 'on':
+            newly_lit_cubes = [current_cube]
             for cube in cubes:
                 newly_lit_cubes_bis = []
                 for newly_lit_cube in newly_lit_cubes:
@@ -125,14 +114,14 @@ def part_2(lines):
             new_cubes = cubes + newly_lit_cubes
         else:
             for cube in cubes:
-                new_cubes += cube.delete(newly_lit_cubes[0])
+                new_cubes += cube.delete(current_cube)
         cubes = new_cubes
     score = sum([c.size() for c in cubes])
     print("Part 2:", score)
 
 
 def main():
-    with open("input_22test.txt", 'r') as in22:
+    with open("input_22.txt", 'r') as in22:
         lines = [line.strip() for line in in22.readlines()]
     s = time.time()
 
