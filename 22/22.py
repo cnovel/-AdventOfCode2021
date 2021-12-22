@@ -73,7 +73,7 @@ class Cube:
                     cubes.append(Cube(x_pair[0], x_pair[1], y_pair[0], y_pair[1], z_pair[0], z_pair[1]))
         return cubes
 
-    def add(self, cube) -> list:  # Returns a list of new lit cubes
+    def add(self, cube) -> list:  # Returns a list of newly lit cubes
         if not self.intersects(cube):
             return [cube]
 
@@ -83,11 +83,11 @@ class Cube:
                 cubes.append(sub_cube)
         return cubes
 
-    def delete(self, cube) -> list:
+    def delete(self, cube) -> list: # Return a list of still lit cubes
         if cube.engulf(self):
             return []
         if not self.intersects(cube):
-            return [cube]
+            return [self]
 
         cubes = []
         for sub_cube in self._get_cubes(cube):
@@ -99,7 +99,7 @@ class Cube:
 def part_2(lines):
     cubes = [Cube(lines[0][1][0], lines[0][1][1], lines[0][1][2], lines[0][1][3], lines[0][1][4], lines[0][1][5])]
     for i in range(1, len(lines)):
-        print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
+        #print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
         line = lines[i]
         current_cube = Cube(line[1][0], line[1][1], line[1][2], line[1][3], line[1][4], line[1][5])
         new_cubes = []
@@ -113,9 +113,11 @@ def part_2(lines):
                 newly_lit_cubes = newly_lit_cubes_bis
             new_cubes = cubes + newly_lit_cubes
         else:
-            for cube in cubes:
-                new_cubes += cube.delete(current_cube)
+            for lit_cube in cubes:
+                new_cubes += lit_cube.delete(current_cube)
+
         cubes = new_cubes
+
     score = sum([c.size() for c in cubes])
     print("Part 2:", score)
 
