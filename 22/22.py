@@ -83,7 +83,7 @@ class Cube:
                 cubes.append(sub_cube)
         return cubes
 
-    def delete(self, cube) -> list: # Return a list of still lit cubes
+    def delete(self, cube) -> list:  # Return a list of still lit cubes
         if cube.engulf(self):
             return []
         if not self.intersects(cube):
@@ -99,7 +99,7 @@ class Cube:
 def part_2(lines):
     cubes = [Cube(lines[0][1][0], lines[0][1][1], lines[0][1][2], lines[0][1][3], lines[0][1][4], lines[0][1][5])]
     for i in range(1, len(lines)):
-        #print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
+        print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
         line = lines[i]
         current_cube = Cube(line[1][0], line[1][1], line[1][2], line[1][3], line[1][4], line[1][5])
         new_cubes = []
