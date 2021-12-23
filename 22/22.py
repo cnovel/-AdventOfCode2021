@@ -99,23 +99,14 @@ class Cube:
 def part_2(lines):
     cubes = [Cube(lines[0][1][0], lines[0][1][1], lines[0][1][2], lines[0][1][3], lines[0][1][4], lines[0][1][5])]
     for i in range(1, len(lines)):
-        print(f"Line {i+1}/{len(lines)}, {len(cubes)} cubes")
         line = lines[i]
         current_cube = Cube(line[1][0], line[1][1], line[1][2], line[1][3], line[1][4], line[1][5])
         new_cubes = []
 
+        for lit_cube in cubes:
+            new_cubes += lit_cube.delete(current_cube)
         if line[0] == 'on':
-            newly_lit_cubes = [current_cube]
-            for cube in cubes:
-                newly_lit_cubes_bis = []
-                for newly_lit_cube in newly_lit_cubes:
-                    newly_lit_cubes_bis += cube.add(newly_lit_cube)
-                newly_lit_cubes = newly_lit_cubes_bis
-            new_cubes = cubes + newly_lit_cubes
-        else:
-            for lit_cube in cubes:
-                new_cubes += lit_cube.delete(current_cube)
-
+            new_cubes.append(current_cube)
         cubes = new_cubes
 
     score = sum([c.size() for c in cubes])
